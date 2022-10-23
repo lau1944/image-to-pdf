@@ -32,7 +32,7 @@ app.use(express.static(__dirname));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-app.use('/', express.static(__dirname + '/src/views'));
+//app.use('/', express.static(__dirname + '/src/views'));
 
 const uploadForm = upload.fields([{ name: 'photo', maxCount: 1 }]);
 // post photo
