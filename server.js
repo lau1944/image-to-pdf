@@ -40,6 +40,10 @@ app.post('/photo', uploadForm, async (req, res, next) => {
   const { rotateDegree = 0, sizeType = 'A4', outputFormat = 'pdf' } = req.query;
   const photo = req.files.photo[0];
 
+  if (!photo) {
+    return res.fail(403, 'Photo should not be empty');
+  }
+
   if (photo.mimetype !== 'image/png' && photo.mimetype !== 'image/jpeg') {
     return res.fail(403, 'Photo type should be png or jpeg');
   }
