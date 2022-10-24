@@ -11,7 +11,6 @@ const sharp = require("sharp");
 const imgToPDF = require('image-to-pdf');
 const fs = require('fs');
 const img = require('./src/utils/img');
-const path = require('path');
 
 const app = express();
 const port = process.env.PORT || 8080;
