@@ -5,10 +5,13 @@ const bodyParser = require('body-parser');
 const helmet = require('helmet');
 const auth = require('./src/middlewares/auth');
 const resWrapper = require('./src/models/response');
-const multer  = require('multer')
+const multer = require('multer')
 const upload = multer({ dest: 'uploads/' })
 const sharp = require("sharp");
 const imgToPDF = require('image-to-pdf');
+const fs = require('fs');
+const img = require('./src/utils/img');
+const path = require('path');
 
 const app = express();
 const port = process.env.PORT || 8080;
@@ -32,7 +35,7 @@ app.use(express.static(__dirname));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-//app.use('/', express.static(__dirname + '/src/views'));
+app.use('/', express.static(__dirname + '/src/views'));
 
 const uploadForm = upload.fields([{ name: 'photo', maxCount: 1 }]);
 // post photo
@@ -48,16 +51,22 @@ app.post('/photo', uploadForm, async (req, res, next) => {
     return res.fail(403, 'Photo type should be png or jpeg');
   }
 
+
+  let imgPath = photo.path;
+
   if (photo.size > MAX_PHOTO_SIZE) {
     // do compress
     await sharp(photo.buffer)
-      .rotate(rotateDegree)
       .png({ quality: 70 })
       .jpeg({ quality: 70 })
-      .toFile(photo.path);
+      .toFile(imgPath);
   }
 
-  imgToPDF([photo.path], imgToPDF.sizes[sizeType]).pipe((res));
+  if (rotateDegree !== 0) {
+    await img.rotate(imgPath, rotateDegree);
+  }
+
+  imgToPDF([imgPath], imgToPDF.sizes[sizeType]).pipe((fs.createWriteStream('output.pdf')));
 });
 
 app.listen(port, () => {
