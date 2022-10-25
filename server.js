@@ -40,9 +40,9 @@ const uploadForm = upload.fields([{ name: 'photo', maxCount: 1 }]);
 // post photo
 app.post('/photo', uploadForm, async (req, res, next) => {
   const { rotateDegree = 0, sizeType = 'A4', outputFormat = 'pdf' } = req.query;
-  const photo = req.files.photo[0];
+  const photo = req.files?.photo?.first;
 
-  if (!photo || photo.length === 0) {
+  if (!photo) {
     return res.fail(403, 'Photo should not be empty');
   }
   
