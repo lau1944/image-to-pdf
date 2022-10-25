@@ -45,9 +45,9 @@ app.post('/photo', uploadForm, async (req, res, next) => {
   if (!photo || photo.length === 0) {
     return res.fail(403, 'Photo should not be empty');
   }
-
-  if (photo.mimetype !== 'image/png' && photo.mimetype !== 'image/jpeg') {
-    return res.fail(403, 'Photo type should be png or jpeg');
+  
+  if (photo.mimetype !== 'image/png' && photo.mimetype !== 'image/jpeg' && photo.mimetype !== 'image/jpg') {
+    return res.fail(403, 'Photo type should be png or jpeg or jpg');
   }
 
 
@@ -65,7 +65,7 @@ app.post('/photo', uploadForm, async (req, res, next) => {
     await img.rotate(imgPath, rotateDegree);
   }
 
-  imgToPDF([imgPath], imgToPDF.sizes[sizeType]).pipe((fs.createWriteStream('output.pdf')));
+  imgToPDF([imgPath], imgToPDF.sizes[sizeType]).pipe((res));
 });
 
 app.listen(port, () => {
